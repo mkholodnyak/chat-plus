@@ -76,7 +76,7 @@ modules.define(
                         break;
 
                     case 'users':
-                        chatAPI.on('rtm.start', function(result){
+                        chatAPI.on('rtm.start', function(e, result){
                             var usersStatusOnStart = {};
 
                             result.users.forEach(function(user){
@@ -221,7 +221,7 @@ modules.define(
                     updateUsersStatus('activeUsersUpdated', data);
                 });
 
-                chatAPI.on('presence_change', function(data){
+                chatAPI.on('presence_change', function(e, data){
                     updateUsersStatus('presence_change', data);
                 });
             },

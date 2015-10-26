@@ -34,7 +34,7 @@ modules.define(
                 var shrimingEvents = channels('shriming-events');
                 var generatedMessage;
 
-                chatAPI.on('message', function(data){
+                chatAPI.on('message', function(e, data){
                     console.log(data);
                     if(_this._channelId && data.channel === _this._channelId){
                         generatedMessage = _this._generateMessage(data);
@@ -109,7 +109,8 @@ modules.define(
                     .then(function(data){
                         console.log('Channel mark: ', data);
                     })
-                    .catch(function(){
+                    .catch(function(err){
+                        console.log(err);
                         Notify.error('Ошибка при открытии канала!');
                     });
             },
