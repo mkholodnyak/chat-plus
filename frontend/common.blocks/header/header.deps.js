@@ -7,7 +7,7 @@
         },
         {
             block : 'logo',
-            mods : { white : true }
+            mods : { theme : 'light'}
         },
         {
             block: 'notify'

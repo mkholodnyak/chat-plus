@@ -37,7 +37,8 @@ block('dialog').elem('console')(
                 {
                     block : 'textarea',
                     mods : {
-                        focused : false
+                        focused : false,
+                        theme: 'shriming'
                     },
                     mix : {
                         block : 'chat-input',

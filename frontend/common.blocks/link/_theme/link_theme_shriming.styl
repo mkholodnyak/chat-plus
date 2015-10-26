@@ -1,5 +1,9 @@
-.link_theme_shriming
-    color #fff
+$link-color = #fff
 
-    &:hover, &:active, &:focus
-        color #fff
+.link_theme_shriming
+    color $link-color
+
+    &.link_focused,
+    &.link_hovered
+        border-bottom 1px solid $link-color
+        color $link-color

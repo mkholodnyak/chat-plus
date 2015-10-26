@@ -1,14 +1,14 @@
 block('landing')(
-    def()(function(){
-        var FOOTER_LINKS = [
+    content()(function(){
+        var footerLinks = [
             { title : 'Github', url : 'https://github.com/shriming/chat' },
             { title : 'ШРИ Яндекс', url : 'https://academy.yandex.ru/events/shri/' },
             { title : 'Heroku', url : 'https://shriming.herokuapp.com/' }
         ];
 
-        return applyCtx([
+        return [
             {
-                block : 'landing',
+                elem : 'content',
                 content : [
                     {
                         elem : 'container',
@@ -41,9 +41,8 @@ block('landing')(
                 ]
             },
             {
-                block : 'landing',
                 elem : 'footer',
-                content : FOOTER_LINKS.map(function(link){
+                content : footerLinks.map(function(link){
                     return {
                         block : 'link',
                         target : '_black',
@@ -53,6 +52,6 @@ block('landing')(
                     };
                 })
             }
-        ]);
+        ];
     })
 );

@@ -6,7 +6,7 @@ block('header')(
         return applyCtx({
             block : 'header',
             mods : { logged : isLogged },
-            js: true,
+            js : true,
             content : [
                 {
                     elem : 'menu',
@@ -14,7 +14,7 @@ block('header')(
                 },
                 {
                     block : 'logo',
-                    mods : { white : isLogged }
+                    mods : { theme : isLogged ? 'light' : 'dark' }
                 },
                 {
                     elem : 'title',

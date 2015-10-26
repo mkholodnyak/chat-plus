@@ -1,9 +1,7 @@
 block('user')(
     content()(function(){
         var user = this.ctx.user || {};
-        var content = [];
-
-        content.push([
+        return [
             {
                 block : 'avatar',
                 mix : { block : 'user', elem : 'avatar' },
@@ -26,8 +24,6 @@ block('user')(
             {
                 elem : 'status'
             }
-        ]);
-
-        return content;
+        ];
     })
 );
