@@ -15,7 +15,7 @@ modules.define('page', ['i-bem__dom', 'i-chat-api', 'socket-io', 'i-users'],
                         io.socket.on('connect', function(){
                             setTimeout(function(){
                                 io.socket.get('/csrfToken', function(data){
-                                    io.socket.get('/webrtc/connected', { _csrf : data._csrf });
+                                    io.socket.get('/webrtc/connected', {_csrf : data._csrf});
                                 });
                             });
                         });
@@ -32,9 +32,10 @@ modules.define('page', ['i-bem__dom', 'i-chat-api', 'socket-io', 'i-users'],
                                 chatAPI.init(_this.params.token);
                             }
 
-                            Users.fetch().catch(function(){
-                                Notify.error('Ошибка загрузки списка пользователей!');
-                            });
+                            Users.fetch()
+                                .catch(function(){
+                                    Notify.error('Ошибка загрузки списка пользователей!');
+                                });
                             _this.emit('slackInited');
                         });
 

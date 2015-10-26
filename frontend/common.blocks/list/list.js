@@ -1,7 +1,7 @@
 modules.define(
     'list',
-    ['i-bem__dom', 'BEMHTML', 'jquery', 'i-chat-api', 'i-users', 'notify', 'events__channels', 'keyboard__codes', 'editable-title'],
-    function(provide, BEMDOM, BEMHTML, $, chatAPI, Users, Notify, channels, keyCodes, EditableTitle){
+    ['i-bem__dom', 'BEMHTML', 'jquery', 'i-chat-api', 'i-users', 'notify', 'events__channels', 'keyboard__codes', 'editable-title', 'functions__throttle'],
+    function(provide, BEMDOM, BEMHTML, $, chatAPI, Users, Notify, channels, keyCodes, EditableTitle, throttle){
 
         provide(BEMDOM.decl(this.name, {
             onSetMod : {
@@ -70,7 +70,7 @@ modules.define(
             _initializeLists : function(){
                 var _this = this;
 
-                switch (_this.getMod('type')) {
+                switch(_this.getMod('type')) {
                     case 'channels':
                         this._getChannelsData();
                         break;
@@ -115,7 +115,7 @@ modules.define(
                             return BEMHTML.apply({
                                 block : 'list',
                                 elem : 'item',
-                                mods : { type : 'channels' },
+                                mods : {type : 'channels'},
                                 content : channel.name,
                                 js : {
                                     channelId : channel.id,
@@ -163,7 +163,7 @@ modules.define(
                             return BEMHTML.apply({
                                 block : 'list',
                                 elem : 'item',
-                                mods : { type : 'users' },
+                                mods : {type : 'users'},
                                 js : {
                                     channelId : im.id,
                                     name : user.name,
@@ -174,7 +174,7 @@ modules.define(
                                     js : {
                                         id : user.id
                                     },
-                                    mods : { presence : user.presence },
+                                    mods : {presence : user.presence},
                                     user : {
                                         name : user.name,
                                         realName : user.real_name,
@@ -196,12 +196,12 @@ modules.define(
 
                 function updateUsersStatus(name, data){
                     _this.findBlocksInside('user').forEach(function(user){
-                        switch (name) {
+                        switch(name) {
                             case 'activeUsersUpdated':
                                 if(data[user.params.id]) {
                                     user.setMod('presence', 'local');
                                 } else if(user.hasMod('presence', 'local')) {
-                                    chatAPI.get('users.getPresence', { user : user.params.id }).then(function(data){
+                                    chatAPI.get('users.getPresence', {user : user.params.id}).then(function(data){
                                         if(data.ok) {
                                             user.setMod('presence', data.presence);
                                         }
@@ -254,28 +254,27 @@ modules.define(
                 this._spinBlock.setMod('visible');
                 this.delMod(this.elem('add-channel-input'), 'visible');
                 var _this = this;
-                chatAPI.post('channels.create', { name : channelName })
+                chatAPI.post('channels.create', {name : channelName})
                     .then(function(response){
-                        if(!response.ok) {
-                            switch (response.error) {
-                                case 'name_taken':
-                                    Notify.error('Такое имя канала уже существует!');
-                                    break;
-                                case 'restricted_action':
-                                    Notify.error('Вам запрещено создавать новые каналы!');
-                                    break;
-                                case 'no_channel':
-                                    Notify.error('Имя канала не может быть пустым и должно состоять из букв и цифр!');
-                                    break;
-                                default:
-                                    Notify.error('Ошибка создания канала!');
-                            }
-                            return;
-                        }
                         Notify.success('Канал успешно создан!');
                         _this._createChannelInput.setVal('');
                         _this.dropElemCache('item');
                         _this._initializeLists();
+                    })
+                    .catch(function(err){
+                        switch(err) {
+                            case 'name_taken':
+                                Notify.error('Такое имя канала уже существует!');
+                                break;
+                            case 'restricted_action':
+                                Notify.error('Вам запрещено создавать новые каналы!');
+                                break;
+                            case 'no_channel':
+                                Notify.error('Имя канала не может быть пустым и должно состоять из букв и цифр!');
+                                break;
+                            default:
+                                Notify.error('Ошибка создания канала!');
+                        }
                     })
                     .always(function(){
                         _this._spinBlock.delMod('visible');
@@ -285,10 +284,14 @@ modules.define(
 
             _onItemClick : function(e){
                 var item = $(e.currentTarget);
+                if (this.getMod(item, 'current')) {
+                    return;
+                }
+
                 var type = this.getMod(item, 'type');
                 var counter = this._getItemCounter(this.elemParams(item).channelId);
 
-                if(type == 'channels'){
+                if(type == 'channels') {
                     location.hash = e.target.innerText;
                 }
 
@@ -318,7 +321,7 @@ modules.define(
                 BEMDOM.replace(currentItem, BEMHTML.apply({
                     block : 'list',
                     elem : 'item',
-                    mods : { type : 'channels', current : true },
+                    mods : {type : 'channels', current : true},
                     content : params.name,
                     js : params
                 }));

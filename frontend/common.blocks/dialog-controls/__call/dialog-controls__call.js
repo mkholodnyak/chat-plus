@@ -8,23 +8,28 @@ modules.define(
 
         navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
 
-        var pc = new PeerConnection({
-                iceServers : [
-                    { url : "stun:23.21.150.121" },
-                    { url : "stun:stun.l.google.com:19302" }
-                ]
-            },
-            {
-                optional : [
-                    // FF/Chrome interop? https://hacks.mozilla.org/category/webrtc/as/complete/
-                    { DtlsSrtpKeyAgreement : true }
-                ]
-            });
+
+        if(!PeerConnection) {
+            Notify.info('Ваш браузер не поддерживает WebRTC!');
+        } else {
+            var pc = new PeerConnection({
+                    iceServers : [
+                        {url : "stun:23.21.150.121"},
+                        {url : "stun:stun.l.google.com:19302"}
+                    ]
+                },
+                {
+                    optional : [
+                        // FF/Chrome interop? https://hacks.mozilla.org/category/webrtc/as/complete/
+                        {DtlsSrtpKeyAgreement : true}
+                    ]
+                });
+        }
 
         function gotStream(stream){
             BEMDOM.update(
                 this.findBlockOutside('page')
-                    .findBlockInside({ block : 'video', modName : 'local', modVal : true })
+                    .findBlockInside({block : 'video', modName : 'local', modVal : true})
                     .findElem('inner'),
                 BEMHTML.apply({
                     tag : 'video',
@@ -149,11 +154,11 @@ modules.define(
                 var icon = this.findBlockInside('icon');
 
                 var localVideo = this.findBlockOutside('page')
-                    .findBlockInside({ block : 'video', modName : 'local', modVal : true })
+                    .findBlockInside({block : 'video', modName : 'local', modVal : true})
                     .findElem('inner');
 
                 var remoteVideo = this.findBlockOutside('page')
-                    .findBlockInside({ block : 'video', modName : 'remote', modVal : true })
+                    .findBlockInside({block : 'video', modName : 'remote', modVal : true})
                     .findElem('inner');
 
                 [localVideo, remoteVideo].forEach(function(video){
@@ -166,13 +171,13 @@ modules.define(
 
                 icon.setMod('name', 'call-disabled');
                 this.localStream.stop();
-                if (this.remoteStream) {
+                if(this.remoteStream) {
                     this.remoteStream.stop();
                 }
             },
             _openUser : function(userId){
                 var pageBlock = this.findBlockOutside('page');
-                var listBlock = pageBlock.findBlockInside({ block : 'list', modName : 'type', modVal : 'users' });
+                var listBlock = pageBlock.findBlockInside({block : 'list', modName : 'type', modVal : 'users'});
 
                 listBlock.findBlocksInside('user').forEach(function(user){
                     if(user.params.id == userId && user.hasMod('presence', 'local')) {
@@ -232,7 +237,7 @@ modules.define(
             _gotRemoteStream : function(event){
                 BEMDOM.update(
                     this.findBlockOutside('page')
-                        .findBlockInside({ block : 'video', modName : 'remote', modVal : true })
+                        .findBlockInside({block : 'video', modName : 'remote', modVal : true})
                         .findElem('inner'),
                     BEMHTML.apply({
                         tag : 'video',
@@ -253,14 +258,14 @@ modules.define(
                 pc.createOffer(
                     this._gotLocalDescription.bind(this),
                     console.error,
-                    { 'mandatory' : { 'OfferToReceiveAudio' : true, 'OfferToReceiveVideo' : true } }
+                    {'mandatory' : {'OfferToReceiveAudio' : true, 'OfferToReceiveVideo' : true}}
                 );
             },
             _createAnswer : function(){
                 pc.createAnswer(
                     this._gotLocalDescription.bind(this),
                     console.error,
-                    { 'mandatory' : { 'OfferToReceiveAudio' : true, 'OfferToReceiveVideo' : true } }
+                    {'mandatory' : {'OfferToReceiveAudio' : true, 'OfferToReceiveVideo' : true}}
                 );
             },
             _gotLocalDescription : function(description){
@@ -269,7 +274,7 @@ modules.define(
             },
             //Socket
             _sendMessage : function(type, message, to){
-                message = { type : type, content : message, to : to };
+                message = {type : type, content : message, to : to};
                 io.socket.get('/csrfToken', function(data){
                     message._csrf = data._csrf;
                     io.socket.post('/webrtc/message', message);
