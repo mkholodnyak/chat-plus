@@ -1,4 +1,0 @@
-block('login')(
-    elem('providers').tag()('ul'),
-    elem('provider').tag()('li')
-);
