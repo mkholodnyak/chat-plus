@@ -36,11 +36,11 @@ modules.define(
 
                 chatAPI.on('message', function(e, data){
                     console.log(data);
-                    if(_this._channelId && data.channel === _this._channelId){
+                    if(_this._channelId && data.channel === _this._channelId) {
                         generatedMessage = _this._generateMessage(data);
                         BEMDOM.append(_this._container, generatedMessage);
                         _this._scrollToBottom();
-                    }else{
+                    } else {
                         shrimingEvents.emit('channel-received-message', { channelId : data.channel });
                     }
                 });
@@ -93,9 +93,13 @@ modules.define(
             },
 
             _onHistoryScroll : debounce(function(e){
+                if (this.getMod('loaded')) {
+                    return;
+                }
+
                 var history = this.elem('history');
 
-                if((e.type === 'wheel' || e.type === 'DOMMouseScroll' || e.type === 'mousewheel') && history.scrollTop() === 0){
+                if((e.type === 'wheel' || e.type === 'DOMMouseScroll' || e.type === 'mousewheel') && history.scrollTop() === 0) {
                     this.setMod(this.elem('spin'), 'visible');
                     this._getData(true);
                 }
@@ -110,19 +114,23 @@ modules.define(
                         console.log('Channel mark: ', data);
                     })
                     .catch(function(err){
-                        console.log(err);
-                        Notify.error('Ошибка при открытии канала!');
+                        switch(err) {
+                            case 'not_in_channel':
+                                break;
+                            default:
+                                Notify.error('Ошибка при открытии канала!');
+                        }
                     });
             },
 
             _getData : function(infiniteScroll){
                 var _this = this;
-
+                _this.delMod('loaded');
                 this.elem('blank').hide();
 
                 chatAPI.post(this._channelType + '.history', {
                     channel : this._channelId,
-                    latest : infiniteScroll? this._tsOffset : 0
+                    latest : infiniteScroll ? this._tsOffset : 0
                 })
                     .then(function(resData){
                         var messages = resData.messages.reverse();
@@ -130,16 +138,17 @@ modules.define(
                             return _this._generateMessage(message);
                         });
 
-                        if(messages.length){
+                        if(messages.length) {
                             _this._markChannelRead(messages[messages.length - 1].ts);
                             _this._tsOffset = messages[0].ts;
-                        }else{
+                        } else {
+                            _this.setMod('loaded', true);
                             _this.elem('blank').show();
                         }
 
-                        if(infiniteScroll){
+                        if(infiniteScroll) {
                             BEMDOM.prepend(_this._container, messagesList.join(''));
-                        }else{
+                        } else {
                             BEMDOM.update(_this._container, messagesList);
                             _this._scrollToBottom();
                         }
@@ -166,17 +175,17 @@ modules.define(
                 var historyElement = this.elem('history');
                 var historyElementHeight;
 
-                if(historyElement.length){
+                if(historyElement.length) {
                     historyElementHeight = historyElement[0].scrollHeight;
                     $(historyElement).scrollTop(historyElementHeight);
                 }
             },
 
             _onConsoleKeyDown : function(e){
-                if(e.keyCode === keyCodes.ENTER && !e.ctrlKey){
+                if(e.keyCode === keyCodes.ENTER && !e.ctrlKey) {
                     e.preventDefault();
 
-                    if(!this._textarea.hasMod('emoji')){
+                    if(!this._textarea.hasMod('emoji')) {
                         this._sendMessage(e.target.value);
                         e.target.value = '';
                     }
@@ -194,8 +203,8 @@ modules.define(
                     text : message,
                     channel : _this._channelId,
                     username : _this.params.username,
-                    unfurl_links: true,
-                    unfurl_media: true,
+                    unfurl_links : true,
+                    unfurl_media : true,
                     as_user : true
                 })
                     .then(function(){
