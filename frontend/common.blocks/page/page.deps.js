@@ -2,7 +2,8 @@
     mustDeps : [
         { block : 'libs' },
         { block : 'variables' },
-        { block : 'i-bem', elem : 'dom' }
+        { block : 'i-bem', elem : 'dom' },
+        { block: 'i-chat-api' }
     ],
     shouldDeps : [
         { block : 'landing' },

@@ -14,7 +14,6 @@ config.browserSyncPort = process.env.BROWSER_SYNC_PORT;
 process.env.NODE_ENV = process.env.NODE_ENV || config.dev;
 config.env = process.env.NODE_ENV;
 
-console.log(process);
 
 var envConfig;
 // require could error out if
