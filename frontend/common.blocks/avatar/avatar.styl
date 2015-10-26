@@ -1,3 +1,14 @@
 .avatar
     display inline-block
 
+// @stylint off
+    $sizeList = (16 24 32 48 72);
+
+    for $sizeVal, i in xs s m l xl
+        &.avatar_size_{$sizeVal}
+            line-height: $sizeList[i]px
+            width: $sizeList[i]px
+            height: $sizeList[i]px
+
+// @stylint on
+
