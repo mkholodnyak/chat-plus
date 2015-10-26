@@ -11,14 +11,9 @@
         { block : 'notify' },
         { block : 'events', elems : 'channels' },
         { block : 'button' },
-        { elem : 'addition', mods : { 'open' : true } },
-        {
-            block : 'input',
-            mods : { theme : 'shriming', size : 's', 'has-clear' : true }
-        },
-        {
-            block: 'keyboard',
-            elem: 'codes'
-        }
+        { block : 'input', mods : { theme : 'shriming', size : 's', 'has-clear' : true } },
+        { block: 'keyboard', elem: 'codes' },
+        { block: 'functions', elem: 'throttle'},
+        { elem : 'addition', mods : { 'open' : true } }
     ]
 });
