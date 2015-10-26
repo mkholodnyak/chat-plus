@@ -3,11 +3,6 @@ modules.define(
     ['toastr'],
     function(provide, toastr){
 
-        /**
-         *
-         *
-         * @constructor
-         */
         var Notify = function(){
         };
 

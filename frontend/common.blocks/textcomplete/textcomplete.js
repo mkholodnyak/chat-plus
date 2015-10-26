@@ -26,32 +26,32 @@ modules.define(
                     match : /\B:([\-+\w]*)$/,
                     search : function(term, callback){
                         _this._textarea.setMod('emoji');
-                        var results = [];
-                        var results2 = [];
-                        var results3 = [];
+                        var shortnames = [];
+                        var aliases = [];
+                        var keywords = [];
                         $.each(emojiData, function(shortname, data){
                             if(shortname.indexOf(term) > -1) {
-                                results.push(shortname);
+                                shortnames.push(shortname);
                             } else {
                                 if((data.aliases !== null) && (data.aliases.indexOf(term) > -1)) {
-                                    results2.push(shortname);
+                                    aliases.push(shortname);
                                 }
                                 else if((data.keywords !== null) && (data.keywords.indexOf(term) > -1)) {
-                                    results3.push(shortname);
+                                    keywords.push(shortname);
                                 }
                             }
                         });
 
                         if(term.length >= 3) {
-                            results.sort(function(a, b){
+                            var comparator = function(a, b){
                                 return (a.length > b.length);
-                            });
-                            results2.sort(function(a, b){
-                                return (a.length > b.length);
-                            });
-                            results3.sort();
+                            };
+
+                            shortnames.sort(comparator);
+                            aliases.sort(comparator);
+                            keywords.sort();
                         }
-                        var newResults = results.concat(results2).concat(results3);
+                        var newResults = shortnames.concat(aliases).concat(keywords);
                         callback(newResults);
                     },
 
