@@ -28,7 +28,7 @@ modules.define('i-users', ['i-chat-api', 'events__channels'],
                 var _this = this;
                 this._users = {};
 
-                return chatAPI.get('users.list').then(function(data){
+                return chatAPI.post('users.list').then(function(data){
                     if(data.members && data.members.length) {
                         data.members.forEach(function(member){
                             _this._users[member.id] = member;
