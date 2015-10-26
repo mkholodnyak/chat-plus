@@ -3,8 +3,8 @@
  * @description Обеспечивает общение клиентской части чата и Slack RTM
  */
 
-modules.define('i-chat-api', ['jquery', 'vow', 'eventemitter2', 'i-helper__function'],
-    function(provide, $, vow, EventEmitter2, helper){
+modules.define('i-chat-api', ['jquery', 'vow', 'events', 'functions', 'functions__once'],
+    function(provide, $, vow, events, functions, once){
 
         var chatAPIPrototype = {
             /**
@@ -64,7 +64,7 @@ modules.define('i-chat-api', ['jquery', 'vow', 'eventemitter2', 'i-helper__funct
 
             _RTM_START_URL : 'https://slack.com/api/rtm.start',
 
-            init : helper.once(function(token){
+            init : once(function(token){
                 this._token = token;
                 this._setHandlers();
                 this._getSocketURL();
@@ -79,8 +79,7 @@ modules.define('i-chat-api', ['jquery', 'vow', 'eventemitter2', 'i-helper__funct
 
             _internalEvents : {
                 // TODO: Решить с командой правильную обработку потери соединения
-                '_connection-open' : function(){
-                },
+                '_connection-open' : functions.noop,
                 '_connection-close' : function(response){
                     console.error('Socket.close');
                 },
@@ -205,9 +204,7 @@ modules.define('i-chat-api', ['jquery', 'vow', 'eventemitter2', 'i-helper__funct
             }
         };
 
-        var chatAPI = $.extend({}, chatAPIPrototype, new EventEmitter2({
-            wildcard : true
-        }));
+        var chatAPI = $.extend({}, chatAPIPrototype, new events.Emitter());
 
         provide(chatAPI);
     });
