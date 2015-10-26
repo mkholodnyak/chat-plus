@@ -29,7 +29,7 @@ modules.define('page', ['i-bem__dom', 'i-chat-api', 'socket-io', 'i-users'],
                         io.socket.on('slackInited', function(){
                             console.log('Slack inited!');
                             if(!chatAPI.isOpen()) {
-                                chatAPI.init();
+                                chatAPI.init(_this.params.token);
                             }
 
                             Users.fetch().catch(function(){

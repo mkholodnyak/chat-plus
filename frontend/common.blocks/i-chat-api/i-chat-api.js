@@ -3,8 +3,8 @@
  * @description Обеспечивает общение клиентской части чата и Slack RTM
  */
 
-modules.define('i-chat-api', ['i-chat-api__web', 'jquery', 'vow', 'eventemitter2', 'i-helper__function'],
-    function(provide, webAPI, $, vow, EventEmitter2, helper){
+modules.define('i-chat-api', ['jquery', 'vow', 'eventemitter2', 'i-helper__function'],
+    function(provide, $, vow, EventEmitter2, helper){
 
         var chatAPIPrototype = {
             /**
@@ -14,12 +14,14 @@ modules.define('i-chat-api', ['i-chat-api__web', 'jquery', 'vow', 'eventemitter2
              * @param {Object} params Передаваемые данные
              * @return {Promise} Promise ответа сервера
              */
-            request : webAPI.get,
+            request : this.get,
 
             /**
              * Алиас к .request()
              */
-            get : webAPI.get,
+            get : function(action, params){
+                return this._request(action, params, 'get');
+            },
 
             /**
              * Совершает POST-запрос к серверу Slack
@@ -30,7 +32,9 @@ modules.define('i-chat-api', ['i-chat-api__web', 'jquery', 'vow', 'eventemitter2
              * @param {Object} params Передаваемые данные
              * @return {Promise} Promise ответа сервера
              */
-            post : webAPI.post,
+            post : function(action, params){
+                return this._request(action, params, 'post');
+            },
 
             /**
              * Аксессор к полю isOpen
@@ -46,16 +50,29 @@ modules.define('i-chat-api', ['i-chat-api__web', 'jquery', 'vow', 'eventemitter2
                 return this._isOpen;
             },
 
+            /**
+             * Устанавливает новый токен пользователя
+             * @param token
+             */
+            setToken : function(token){
+                if(token.length) {
+                    this._token = token;
+                    this._sendDelayedRequests();
+                    this._getSocketURL();
+                }
+            },
+
             _RTM_START_URL : 'https://slack.com/api/rtm.start',
 
-            init : helper.once(function(){
+            init : helper.once(function(token){
+                this._token = token;
                 this._setHandlers();
                 this._getSocketURL();
             }),
 
             _setHandlers : function(){
                 var events = this._internalEvents;
-                for (var event in events) if(events.hasOwnProperty(event)) {
+                for(var event in events) if(events.hasOwnProperty(event)) {
                     this.on(event, events[event]);
                 }
             },
@@ -130,6 +147,61 @@ modules.define('i-chat-api', ['i-chat-api__web', 'jquery', 'vow', 'eventemitter2
                 this._socket.onerror = function(error){
                     _this.emit('_connection-error', error.message);
                 };
+            },
+
+            _token : '',
+
+            _SLACK_API_URL : 'https://slack.com/api/',
+
+            _isTokenReady : function(){
+                return this._token.length > 0;
+            },
+
+            _sendRequest : function(action, params, method){
+                params = params || {};
+
+                var _this = this;
+                return new vow.Promise(function(resolve, reject){
+                    $.extend(params, {token : _this._token});
+                    $.post(_this._SLACK_API_URL + action, params)
+                        .done(function(resData){
+                            if(!resData || resData.error) {
+                                reject(resData.error || 'Ошибка подключения к API');
+                            }
+                            resolve(resData);
+                        })
+                        .fail(function(err){
+                            reject(err);
+                        });
+                });
+            },
+
+            _delayedRequests : [],
+
+            _addDelayedRequest : function(action, params, method){
+                this._delayedRequests.push({
+                    action : action,
+                    params : params,
+                    method : method
+                });
+            },
+
+            _sendDelayedRequests : function(){
+                var _this = this;
+                _this._delayedRequests.forEach(function(request){
+                    _this._request(request.action, request.params, request.method);
+                });
+                _this._delayedRequests = [];
+            },
+
+            _request : function(action, params, method){
+                method = method || 'get';
+                if(!this._isTokenReady()) {
+                    this._addDelayedRequest(action, params, method);
+                    return new vow.Promise.reject('Token not found!');
+                }
+
+                return this._sendRequest(action, params, method);
             }
         };
 
@@ -137,5 +209,5 @@ modules.define('i-chat-api', ['i-chat-api__web', 'jquery', 'vow', 'eventemitter2
             wildcard : true
         }));
 
-        provide(/** @exports */chatAPI);
+        provide(chatAPI);
     });

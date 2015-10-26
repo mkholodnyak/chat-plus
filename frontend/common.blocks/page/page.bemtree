@@ -9,12 +9,12 @@ match(this.ctx.data)
             pageContent = [
                 {
                     block : 'sidebar',
-                    mods : { left : true },
+                    mods : {left : true},
                     js : true,
                     content : [
                         {
                             block : 'list',
-                            mods : { 'type' : 'channels' },
+                            mods : {'type' : 'channels'},
                             content : [
                                 {
                                     elem : 'title',
@@ -22,17 +22,17 @@ match(this.ctx.data)
                                 },
                                 {
                                     block : 'input',
-                                    mods : { theme : 'shriming', size : 's', 'has-clear' : true },
+                                    mods : {theme : 'shriming', size : 's', 'has-clear' : true},
                                     placeholder : 'Введите название канала',
                                     mix : {
                                         block : 'list',
                                         elem : 'add-channel-input',
-                                        mods : { visible : false }
+                                        mods : {visible : false}
                                     }
                                 },
                                 {
                                     block : 'button',
-                                    mods : { theme : 'islands', view : 'plain' },
+                                    mods : {theme : 'islands', view : 'plain'},
                                     icon : {
                                         block : 'icon',
                                         content : '<svg fill="#aaaaaa" width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"> <path d="M0 0h24v24H0z" fill="none"/><path d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/> </svg>'
@@ -44,22 +44,22 @@ match(this.ctx.data)
                                 },
                                 {
                                     block : 'spin',
-                                    mix : { block : 'list', elem : 'spin' },
-                                    mods : { theme : 'shriming', size : 's' }
+                                    mix : {block : 'list', elem : 'spin'},
+                                    mods : {theme : 'shriming', size : 's'}
                                 },
-                                { elem : 'container' }
+                                {elem : 'container'}
                             ]
                         },
                         {
                             block : 'list',
-                            mods : { 'type' : 'users' },
+                            mods : {'type' : 'users'},
                             content : [
-                                { elem : 'title', content : 'Пользователи' },
-                                { elem : 'container' },
+                                {elem : 'title', content : 'Пользователи'},
+                                {elem : 'container'},
                                 {
                                     block : 'spin',
-                                    mix : { block : 'list', elem : 'spin' },
-                                    mods : { theme : 'shriming', size : 's' }
+                                    mix : {block : 'list', elem : 'spin'},
+                                    mods : {theme : 'shriming', size : 's'}
                                 }
                             ]
                         }
@@ -71,24 +71,24 @@ match(this.ctx.data)
                 },
                 {
                     block : 'sidebar',
-                    mods : { right : true },
+                    mods : {right : true},
                     content : [
                         {
                             block : 'controller',
                             elem : options.controller,
-                            mods : { action : options.action },
+                            mods : {action : options.action},
                             data : data
                         },
                         {
                             block : 'list',
-                            mods : { 'type' : 'conference' },
+                            mods : {'type' : 'conference'},
                             content : [
-                                { elem : 'title', content : 'Активные звонки' },
+                                {elem : 'title', content : 'Активные звонки'},
                                 {
                                     elem : 'container',
                                     content : [
-                                        { block : 'video', mods : { remote : true } },
-                                        { block : 'video', mods : { local : true } }
+                                        {block : 'video', mods : {remote : true}},
+                                        {block : 'video', mods : {local : true}}
                                     ]
                                 },
                                 {
@@ -101,26 +101,28 @@ match(this.ctx.data)
             ];
         } else {
             pageContent = [
-                { block : 'landing' }
+                {block : 'landing'}
             ];
         }
 
         return applyCtx({
             block : 'page',
-            mods : { logged : isLogged },
-            mix : [{ block : 'libs' }],
-            js : true,
+            mods : {logged : isLogged},
+            mix : [{block : 'libs'}],
+            js : {
+                token : data.token || ''
+            },
             head : [
                 {
                     elem : 'meta',
-                    attrs: {
-                        name: 'viewport',
-                        content: 'width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0'
+                    attrs : {
+                        name : 'viewport',
+                        content : 'width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0'
                     }
                 },
-                { elem : 'meta', attrs: { name: 'theme-color', content: '#383455'} },
-                { elem : 'css', url : '/static/css/_merged.css' },
-                { elem : 'favicon', url : '/static/images/favicon.ico' }
+                {elem : 'meta', attrs : {name : 'theme-color', content : '#383455'}},
+                {elem : 'css', url : '/static/css/_merged.css'},
+                {elem : 'favicon', url : '/static/images/favicon.ico'}
             ],
             title : data.title,
             content : [
@@ -130,10 +132,10 @@ match(this.ctx.data)
                 },
                 {
                     block : 'main',
-                    mods : { logged : isLogged },
+                    mods : {logged : isLogged},
                     content : pageContent
                 },
-                { elem : 'js', url : '/static/js/_merged.js' }
+                {elem : 'js', url : '/static/js/_merged.js'}
             ]
         });
     }
