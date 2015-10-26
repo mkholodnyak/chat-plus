@@ -64,14 +64,17 @@ modules.define('i-chat-api', ['jquery', 'vow', 'events', 'functions', 'functions
 
             _RTM_START_URL : 'https://slack.com/api/rtm.start',
 
-            init : once(function(token){
+            init : once(function(token, callback){
                 this._token = token;
-                this._setHandlers();
+                this._setHandlers(callback);
                 this._getSocketURL();
             }),
 
-            _setHandlers : function(){
+            _setHandlers : function(callback){
                 var events = this._internalEvents;
+                if(callback) {
+                    this._internalEvents['_connection-open'] = callback;
+                }
                 for(var event in events) if(events.hasOwnProperty(event)) {
                     this.on(event, events[event]);
                 }
@@ -161,7 +164,7 @@ modules.define('i-chat-api', ['jquery', 'vow', 'events', 'functions', 'functions
 
                 var _this = this;
                 return new vow.Promise(function(resolve, reject){
-                    $.extend(params, {token : _this._token});
+                    $.extend(params, { token : _this._token });
                     $.post(_this._SLACK_API_URL + action, params)
                         .done(function(resData){
                             if(!resData || resData.error) {
@@ -194,8 +197,13 @@ modules.define('i-chat-api', ['jquery', 'vow', 'events', 'functions', 'functions
             },
 
             _request : function(action, params, method){
+                console.log({
+                    action : action,
+                    options : params
+                });
                 method = method || 'get';
                 if(!this._isTokenReady()) {
+                    console.log('Токен еще не готов!');
                     this._addDelayedRequest(action, params, method);
                     return new vow.Promise.reject('Token not found!');
                 }
