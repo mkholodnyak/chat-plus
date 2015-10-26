@@ -1,11 +1,6 @@
 ({
-    mustDeps : [
-        { elems : ['title', 'description', 'image', 'footer', 'login', 'link'] }
-    ],
     shouldDeps : [
-        {
-            block : 'link',
-            mods : { theme : 'islands', size : 'm' }
-        }
+        { elems : ['content', 'title', 'description', 'image', 'footer', 'login', 'link'] },
+        { block : 'link', mods : { theme : 'islands', size : 'm' } }
     ]
 });

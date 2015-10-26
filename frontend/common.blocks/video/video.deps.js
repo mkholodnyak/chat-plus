@@ -1,7 +1,5 @@
 ({
-    mustDeps: [],
-    shouldDeps: [{
-        block: 'video',
-        mods: { local: true, remote: true }
+    shouldDeps: [
+        { block: 'video', mods: { local: true, remote: true }
     }]
 });
