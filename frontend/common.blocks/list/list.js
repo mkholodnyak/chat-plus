@@ -284,6 +284,10 @@ modules.define(
 
             _onItemClick : function(e){
                 var item = $(e.currentTarget);
+                if (this.getMod(item, 'current')) {
+                    return;
+                }
+
                 var type = this.getMod(item, 'type');
                 var counter = this._getItemCounter(this.elemParams(item).channelId);
 
