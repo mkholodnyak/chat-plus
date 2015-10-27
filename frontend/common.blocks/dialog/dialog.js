@@ -39,6 +39,24 @@ modules.define(
                         modVal ? this.setMod(this.elem('spin'), 'visible')
                             : this.delMod(this.elem('spin'), 'visible');
                     }
+                },
+
+                scrollable : {
+                    'true' : function(){
+                        BEMDOM.update(this.elem('button-down'), BEMHTML.apply({
+                            block : 'button',
+                            mods : { theme : 'islands', size : 's' },
+                            mix : { block : 'dialog', elem : 'down' },
+                            text : '↓ Вниз'
+                        }));
+
+                        this.findElem('down').on('click', function(){
+                            this._scrollToLastMessage(true, 1000);
+                        }.bind(this));
+                    },
+                    '' : function(){
+                        this.elem('button-down').text('~ finale ~');
+                    }
                 }
             },
 
@@ -56,7 +74,7 @@ modules.define(
                     if(_this._channelId && data.channel === _this._channelId) {
                         generatedMessage = _this._generateMessage(data);
                         BEMDOM.append(_this._container, generatedMessage);
-                        _this._scrollToLastMessage();
+                        _this._scrollToLastMessage(true, 300);
                     } else {
                         shrimingEvents.emit('channel-received-message', { channelId : data.channel });
                     }
@@ -104,7 +122,7 @@ modules.define(
 
             _onChannelSelect : function(e, data){
                 this._saveInputForChannel();
-
+                this.delMod('scrollable');
                 this._textarea.setMod('disabled');
 
                 this._channelId = data.channelId;
@@ -178,6 +196,8 @@ modules.define(
                     });
             },
 
+            _MESSAGES_NUMBER_PER_REQEUST : 100,
+
             _getData : function(infiniteScroll){
                 var _this = this;
                 _this.delMod('loaded');
@@ -189,6 +209,9 @@ modules.define(
                 })
                     .then(function(resData){
                         var messages = resData.messages.reverse();
+                        if(messages.length < _this._MESSAGES_NUMBER_PER_REQEUST) {
+                            _this.setMod('loaded', true);
+                        }
                         var messagesList = messages.map(function(message){
                             return _this._generateMessage(message);
                         });
@@ -201,7 +224,18 @@ modules.define(
                         }
 
                         if(infiniteScroll) {
+                            var historyElement = _this.elem('history');
+                            var historyElementHeight;
+                            historyElementHeight = historyElement[0].scrollHeight;
+
                             BEMDOM.prepend(_this._container, messagesList.join(''));
+
+                            var newHistoryHeight = historyElement[0].scrollHeight;
+                            var newScrollTop = newHistoryHeight - historyElementHeight;
+                            if(newHistoryHeight > 0) {
+                                _this.setMod('scrollable');
+                                $(historyElement).scrollTop(newScrollTop);
+                            }
                         } else {
                             BEMDOM.update(_this._container, messagesList);
                             _this._scrollToLastMessage();
@@ -229,13 +263,19 @@ modules.define(
              *
              * @private
              */
-            _scrollToLastMessage : function(){
+            _scrollToLastMessage : function(animate, time){
                 var historyElement = this.elem('history');
                 var historyElementHeight;
 
                 if(historyElement.length) {
                     historyElementHeight = historyElement[0].scrollHeight;
-                    $(historyElement).scrollTop(historyElementHeight);
+                    if(animate) {
+                        $(historyElement).animate({
+                            scrollTop : historyElementHeight
+                        }, time || 1000);
+                    } else {
+                        $(historyElement).scrollTop(historyElementHeight);
+                    }
                 }
             },
 
