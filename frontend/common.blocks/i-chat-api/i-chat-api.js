@@ -100,7 +100,7 @@ modules.define('i-chat-api', ['jquery', 'vow', 'events', 'functions', 'functions
                 var _this = this;
                 _this.post('rtm.start')
                     .then(function(result){
-
+                        _this.emit('rtm.start', result);
                         if(!result.ok) {
                             throw new Error(result);
                         }
@@ -108,12 +108,9 @@ modules.define('i-chat-api', ['jquery', 'vow', 'events', 'functions', 'functions
                         if(!result.url) {
                             throw  new Error('URL для создания socket-соединения не найден!');
                         }
-                        setTimeout(function(){
-                            _this.emit('rtm.start', result);
-                        });
 
                         _this.isOpen(true);
-                        _this._initSocket(result.url);
+                        _this._initSocket(result.url, result);
                         _this._RTM_START_OBJECT = result;
                     })
                     .catch(function(error){
@@ -121,12 +118,13 @@ modules.define('i-chat-api', ['jquery', 'vow', 'events', 'functions', 'functions
                     });
             },
 
-            _initSocket : function(url){
+            _initSocket : function(url, slackResponse){
                 var _this = this;
                 this._socket = new WebSocket(url);
 
                 this._socket.onopen = function(){
                     _this.emit('_connection-open');
+                    _this.emit('connection-ready', slackResponse);
                 };
 
                 this._socket.onclose = function(event){

@@ -7,7 +7,7 @@ modules.define(
             _initializeLists : function(){
                 var _this = this;
 
-                chatAPI.on('rtm.start', function(e, result){
+                chatAPI.on('connection-ready', function(e, result){
                     var usersStatusOnStart = {};
 
                     result.users.forEach(function(user){
