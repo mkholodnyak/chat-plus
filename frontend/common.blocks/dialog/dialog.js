@@ -21,6 +21,7 @@ modules.define(
                         this._textarea.bindTo('keydown', this._onConsoleKeyDown.bind(this));
                         this.bindTo('history', 'wheel DOMMouseScroll mousewheel', this._onHistoryScroll.bind(this));
                         this._subscribeMessageUpdate();
+                        this._handleMultilineInput();
                     }
                 },
                 loaded : {
@@ -89,6 +90,16 @@ modules.define(
                 if(!this._isInputClear()) {
                     sessionStorage.setItem(this._channelId, this._textarea.getVal());
                 }
+            },
+
+            _handleMultilineInput : function(){
+                this._textarea.on('change', function(){
+                    var linesCount = (this._textarea.getVal().match(/\n/g) || []).length;
+
+                    (linesCount > 0) ? this.setMod(this.elem('console'), 'type', 'multiline')
+                        : this.delMod(this.elem('console'), 'type');
+                }, this);
+
             },
 
             _onChannelSelect : function(e, data){
