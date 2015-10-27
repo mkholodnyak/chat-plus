@@ -7,5 +7,6 @@
         { block : 'moment', mods : { language : 'ru' } },
         { block : 'marked' },
         { block : 'parser', mods : { type : 'emoji' } },
+        { block : 'tick' }
     ]
 });
