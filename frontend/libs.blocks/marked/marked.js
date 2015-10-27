@@ -19,13 +19,9 @@ modules.define(
                 });
 
                 provide(marked);
-                
+
                 function _setupRenderer(){
                     var renderer = new marked.Renderer();
-
-                    renderer.image = function(href, title, text){
-                        return 'yaaaaa!';
-                    };
 
                     renderer.link = function(href, title, text){
                         var extension = href.split('.').pop();

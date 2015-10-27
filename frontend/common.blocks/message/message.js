@@ -1,7 +1,7 @@
 modules.define(
     'message',
-    ['i-bem__dom', 'BEMHTML', 'i-users', 'moment_language_ru', 'marked'],
-    function(provide, BEMDOM, BEMHTML, Users, moment, marked){
+    ['i-bem__dom', 'BEMHTML', 'i-users', 'moment_language_ru', 'marked', 'parser_type_emoji'],
+    function(provide, BEMDOM, BEMHTML, Users, moment, marked, emojiParser){
         provide(BEMDOM.decl(this.name, {
                 onSetMod : {
                     js : {
@@ -85,7 +85,7 @@ modules.define(
                         message = '@' + Users.getUser(matchPm[1]).name + message.replace(regexp.pm, '');
                     }
 
-                    return marked(message);
+                    return emojiParser(marked(message));
                 }
             }
         ));
