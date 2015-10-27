@@ -14,6 +14,7 @@
         { block : 'notify' },
         { block : 'events', elems : 'channels' },
         { block : 'editable-title', mods : { active : true, empty : true } },
-        { block : 'functions', elem : 'debounce' }
+        { block : 'functions', elem : 'debounce' },
+        { block : 'button', mods : { theme : 'islands', size : 's' } }
     ]
 });
