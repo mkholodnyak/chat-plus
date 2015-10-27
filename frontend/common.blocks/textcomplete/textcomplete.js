@@ -8,24 +8,41 @@ modules.define(
                 js : {
                     inited : function(){
                         this._textarea = this.findBlockInside('textarea');
-
-                        this._initTextCompletePlugin();
-                        this._initMentions();
+                        this._initializeTextCompleteStrategies();
                     }
                 }
             },
+
+            _emojiRegExp : /\B:([\-+\w]*)$/,
+            _mentionRegExp : /\B@([\-+\w]*)$/,
 
             /**
              * Инициализирует плагин автодополнения emoji-иконок
              *
              * @private
              */
-            _initTextCompletePlugin : function(){
+            _initializeTextCompleteStrategies : function(){
                 var _this = this;
 
-                // Код из примера работы плагина
-                this._textarea.domElem.textcomplete([{
-                    match : /\B:([\-+\w]*)$/,
+                this._textarea.domElem.textcomplete([
+                    _this._getEmojiStrategy(),
+                    _this._getMentionStrategy()
+                ]).on({
+                    'textComplete:hide' : function(){
+                        _this._textarea.delMod('emoji');
+                    }
+                });
+            },
+
+            /**
+             * Стратегия обработки emoji-автодополнения
+             */
+            _getEmojiStrategy : function(){
+                var _this = this;
+
+                return {
+                    match : _this._emojiRegExp,
+
                     search : function(term, callback){
                         _this._textarea.setMod('emoji');
                         var shortnames = [];
@@ -45,12 +62,8 @@ modules.define(
                         });
 
                         if(term.length >= 3) {
-                            var comparator = function(a, b){
-                                return (a.length > b.length);
-                            };
-
-                            shortnames.sort(comparator);
-                            aliases.sort(comparator);
+                            shortnames.sort(_this._comparator);
+                            aliases.sort(_this._comparator);
                             keywords.sort();
                         }
                         var newResults = shortnames.concat(aliases).concat(keywords);
@@ -77,19 +90,17 @@ modules.define(
                     index : 1,
 
                     maxCount : 10
-                }]).on({
-
-                    'textComplete:hide' : function(){
-                        _this._textarea.delMod('emoji');
-                    }
-                });
+                };
             },
 
-
-            _initMentions : function(){
+            /**
+             * Стратегия обработки @mention
+             */
+            _getMentionStrategy : function(){
                 var _this = this;
-                this._textarea.domElem.textcomplete([{
-                    match : /\B@([\-+\w]*)$/,
+                return {
+                    match : _this._mentionRegExp,
+
                     search : function(term, callback){
                         var users = Users.getAll();
                         _this._textarea.setMod('emoji');
@@ -106,19 +117,15 @@ modules.define(
                         });
 
                         if(term.length >= 3) {
-                            var comparator = function(a, b){
-                                return (a.length > b.length);
-                            };
-
-                            nicknames.sort(comparator);
-                            realNames.sort(comparator);
+                            nicknames.sort(_this._comparator);
+                            realNames.sort(_this._comparator);
                         }
-                        var newResults = nicknames.concat(realNames);
-                        callback(newResults);
+                        callback(nicknames.concat(realNames));
                     },
 
                     template : function(userID){
                         var user = Users.getUser(userID);
+                        // Настоящее имя пользователя не выводим
                         user.real_name = '';
                         return User.render(user, { theme : 'light' });
                     },
@@ -131,12 +138,11 @@ modules.define(
                     index : 1,
 
                     maxCount : 5
-                }]).on({
+                };
+            },
 
-                    'textComplete:hide' : function(){
-                        _this._textarea.delMod('emoji');
-                    }
-                });
+            _comparator : function(a, b){
+                return (a.length > b.length);
             }
         }));
     });
