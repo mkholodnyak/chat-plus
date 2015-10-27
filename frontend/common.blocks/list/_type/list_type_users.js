@@ -53,7 +53,8 @@ modules.define(
                         BEMDOM.update(_this._container, imsList);
                         updateUsersStatus('activeUsersUpdated', pageBlock._activeUsersUpdated);
                     })
-                    .catch(function(){
+                    .catch(function(err){
+                        console.error(err);
                         Notify.error('Ошибка получения списка приватных бесед');
                     })
                     .always(function(){

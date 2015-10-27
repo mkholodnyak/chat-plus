@@ -238,7 +238,8 @@ modules.define(
                             _this._textarea.delMod('disabled');
                         }
                     })
-                    .catch(function(){
+                    .catch(function(err){
+                        console.error(err);
                         Notify.error('Ошибка загрузки списка сообщений!');
                     })
                     .always(function(){
