@@ -316,6 +316,10 @@ modules.define(
                     .catch(function(err){
                         console.error(err);
                         Notify.error('Ошибка при отправке сообщения!');
+                    })
+                    .always(function(){
+                        console.log(_this._channelId);
+                        sessionStorage.removeItem(_this._channelId);
                     });
             }
         }));
