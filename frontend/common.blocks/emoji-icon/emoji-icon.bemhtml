@@ -8,7 +8,7 @@ block('emoji-icon')(
         return {
             block : 'image',
             url : '//cdn.jsdelivr.net/emojione/assets/png/' + icon + '.png',
-            alt : shortname + ' emoji icon'
+            alt : ':' + shortname + ':'
         };
     })
 );

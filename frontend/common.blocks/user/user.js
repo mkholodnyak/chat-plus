@@ -27,13 +27,13 @@ modules.define('user', ['i-bem__dom', 'BEMHTML'],
                 }
             },
             {
-                render : function(user){
+                render : function(user, mods){
                     return BEMHTML.apply({
                             block : 'user',
                             js : {
                                 id : user.id
                             },
-                            mods : { presence : user.presence },
+                            mods : mods || {},
                             user : {
                                 name : user.name,
                                 realName : user.real_name,

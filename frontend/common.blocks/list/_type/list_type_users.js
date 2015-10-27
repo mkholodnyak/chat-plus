@@ -36,7 +36,7 @@ modules.define(
                                 user.presence = usersStatusOnStart[user.id];
                             }
 
-                            var userBlock = User.render(user);
+                            var userBlock = User.render(user, { presence : user.presence });
                             return BEMHTML.apply({
                                 block : 'list',
                                 elem : 'item',
