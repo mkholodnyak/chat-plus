@@ -22,6 +22,15 @@ modules.define(
                         this.bindTo('history', 'wheel DOMMouseScroll mousewheel', this._onHistoryScroll.bind(this));
                         this._subscribeMessageUpdate();
                     }
+                },
+                loaded : {
+                    'true' : function(){
+                        this.elem('blank').show();
+                    },
+
+                    '' : function(){
+                        this.elem('blank').hide();
+                    }
                 }
             },
 
@@ -52,7 +61,6 @@ modules.define(
 
                 if(userParams.presence != 'local') {
                     dialogControlBlock.setMod(callButton, 'disabled');
-                    dialogControlBlock.setMod(callButton, 'disabled');
                     return;
                 }
 
@@ -68,7 +76,7 @@ modules.define(
                 this.elem('name').text(data.name);
                 this.findBlockInside('editable-title')
                     .reset()
-                    .setVal(this._channelId, data.title, (e.type == 'click-channels'));
+                    .setVal(this._channelId, data.title, (e.type === 'click-channels'));
 
                 switch(e.type) {
                     case 'click-channels':
@@ -93,7 +101,7 @@ modules.define(
             },
 
             _onHistoryScroll : debounce(function(e){
-                if (this.getMod('loaded')) {
+                if(this.getMod('loaded')) {
                     return;
                 }
 
@@ -143,7 +151,6 @@ modules.define(
                             _this._tsOffset = messages[0].ts;
                         } else {
                             _this.setMod('loaded', true);
-                            _this.elem('blank').show();
                         }
 
                         if(infiniteScroll) {

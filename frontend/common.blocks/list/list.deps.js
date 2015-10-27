@@ -1,6 +1,6 @@
 ({
     mustDeps : [
-        { elems : ['title', 'container', 'item', 'spin', 'counter', 'add-channel-input'] }
+        { elems : ['title', 'container', 'item', 'spin', 'counter', 'add-channel-input'] },
     ],
     shouldDeps : [
         { block : 'avatar' },
@@ -12,8 +12,9 @@
         { block : 'events', elems : 'channels' },
         { block : 'button' },
         { block : 'input', mods : { theme : 'shriming', size : 's', 'has-clear' : true } },
-        { block: 'keyboard', elem: 'codes' },
-        { block: 'functions', elem: 'throttle'},
-        { elem : 'addition', mods : { 'open' : true } }
+        { block : 'keyboard', elem : 'codes' },
+        { block : 'functions', elem : 'throttle' },
+        { elem : 'addition', mods : { 'open' : true } },
+        { block : 'list', mods : { type : ['channels', 'users'] } },
     ]
 });

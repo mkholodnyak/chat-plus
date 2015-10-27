@@ -27,8 +27,10 @@ modules.define('page', ['i-bem__dom', 'i-chat-api', 'socket-io', 'i-users', 'not
                         if(!chatAPI.isOpen()) {
                             chatAPI.init(_this.params.token);
                         }
+                        
                         Users.fetch()
-                            .catch(function(){
+                            .catch(function(err){
+                                console.error(err);
                                 Notify.error('Ошибка загрузки списка пользователей!');
                             });
                         _this.emit('slackInited');
