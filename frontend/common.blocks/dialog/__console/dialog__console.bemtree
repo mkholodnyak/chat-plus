@@ -37,6 +37,7 @@ block('dialog').elem('console')(
                 {
                     block : 'textarea',
                     mods : {
+                        disabled: true,
                         focused : false,
                         theme: 'shriming'
                     },

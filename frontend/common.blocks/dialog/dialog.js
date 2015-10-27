@@ -31,6 +31,13 @@ modules.define(
                     '' : function(){
                         this.elem('blank').hide();
                     }
+                },
+
+                loading : {
+                    '*' : function(modName, modVal){
+                        modVal ? this.setMod(this.elem('spin'), 'visible')
+                            : this.delMod(this.elem('spin'), 'visible');
+                    }
                 }
             },
 
@@ -48,7 +55,7 @@ modules.define(
                     if(_this._channelId && data.channel === _this._channelId) {
                         generatedMessage = _this._generateMessage(data);
                         BEMDOM.append(_this._container, generatedMessage);
-                        _this._scrollToBottom();
+                        _this._scrollToLastMessage();
                     } else {
                         shrimingEvents.emit('channel-received-message', { channelId : data.channel });
                     }
@@ -68,7 +75,27 @@ modules.define(
                 callButton.data('slackId', userParams.id);
             },
 
+            _isInputClear : function(){
+                return this._textarea.getVal().length === 0;
+            },
+
+            _restoreInputForChannel : function(){
+                if(this._channelId) {
+                    this._textarea.setVal(sessionStorage.getItem(this._channelId) || '');
+                }
+            },
+
+            _saveInputForChannel : function(){
+                if(!this._isInputClear()) {
+                    sessionStorage.setItem(this._channelId, this._textarea.getVal());
+                }
+            },
+
             _onChannelSelect : function(e, data){
+                this._saveInputForChannel();
+
+                this._textarea.setMod('disabled');
+
                 this._channelId = data.channelId;
                 this._channelType = EVENT_METHODS[e.type];
                 this._tsOffset = 0;
@@ -96,7 +123,8 @@ modules.define(
                 }
 
                 BEMDOM.update(this._container, []);
-                this.setMod(this.elem('spin'), 'visible');
+                this.setMod('loading');
+                this._restoreInputForChannel();
                 this._getData();
             },
 
@@ -108,7 +136,7 @@ modules.define(
                 var history = this.elem('history');
 
                 if((e.type === 'wheel' || e.type === 'DOMMouseScroll' || e.type === 'mousewheel') && history.scrollTop() === 0) {
-                    this.setMod(this.elem('spin'), 'visible');
+                    this.setMod('loading', true);
                     this._getData(true);
                 }
             }, 100),
@@ -157,14 +185,18 @@ modules.define(
                             BEMDOM.prepend(_this._container, messagesList.join(''));
                         } else {
                             BEMDOM.update(_this._container, messagesList);
-                            _this._scrollToBottom();
+                            _this._scrollToLastMessage();
+                        }
+
+                        if(_this._textarea.getMod('disabled')) {
+                            _this._textarea.delMod('disabled');
                         }
                     })
                     .catch(function(){
                         Notify.error('Ошибка загрузки списка сообщений!');
                     })
                     .always(function(){
-                        _this.delMod(_this.elem('spin'), 'visible');
+                        _this.delMod('loading');
                     });
             },
 
@@ -178,7 +210,7 @@ modules.define(
              *
              * @private
              */
-            _scrollToBottom : function(){
+            _scrollToLastMessage : function(){
                 var historyElement = this.elem('history');
                 var historyElementHeight;
 
@@ -193,6 +225,10 @@ modules.define(
                     e.preventDefault();
 
                     if(!this._textarea.hasMod('emoji')) {
+                        if(this._isInputClear()) {
+                            return;
+                        }
+                        
                         this._sendMessage(e.target.value);
                         e.target.value = '';
                     }
@@ -201,7 +237,6 @@ modules.define(
 
             _sendMessage : function(message){
                 var _this = this;
-
                 if(!this._channelId) {
                     return;
                 }

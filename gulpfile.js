@@ -99,11 +99,11 @@ gulp.task('lint', ['jslint', 'stylint']);
 gulp.task('browser-sync', function(){
     var options = {
         notify : true,
-        ghostMode : true,
+        ghostMode : false,
         injectChanges : true,
         logLevel : config.logLevel,
         minify : false,
-        codeSync : true,
+        codeSync : false,
         port : config.browserSyncPort
     };
 
