@@ -68,7 +68,27 @@ modules.define(
                 callButton.data('slackId', userParams.id);
             },
 
+            _isInputClear : function(){
+                return this._textarea.getVal().length === 0;
+            },
+
+            _restoreInputForChannel : function(){
+                if(this._channelId) {
+                    this._textarea.setVal(sessionStorage.getItem(this._channelId) || '');
+                }
+            },
+
+            _saveInputForChannel : function(){
+                if(!this._isInputClear()) {
+                    sessionStorage.setItem(this._channelId, this._textarea.getVal());
+                }
+            },
+
             _onChannelSelect : function(e, data){
+                this._saveInputForChannel();
+
+                this._textarea.setMod('disabled');
+
                 this._channelId = data.channelId;
                 this._channelType = EVENT_METHODS[e.type];
                 this._tsOffset = 0;
@@ -97,6 +117,7 @@ modules.define(
 
                 BEMDOM.update(this._container, []);
                 this.setMod(this.elem('spin'), 'visible');
+                this._restoreInputForChannel();
                 this._getData();
             },
 
