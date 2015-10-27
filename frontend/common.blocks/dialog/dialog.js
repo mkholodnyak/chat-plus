@@ -55,7 +55,7 @@ modules.define(
                     if(_this._channelId && data.channel === _this._channelId) {
                         generatedMessage = _this._generateMessage(data);
                         BEMDOM.append(_this._container, generatedMessage);
-                        _this._scrollToBottom();
+                        _this._scrollToLastMessage();
                     } else {
                         shrimingEvents.emit('channel-received-message', { channelId : data.channel });
                     }
@@ -123,7 +123,7 @@ modules.define(
                 }
 
                 BEMDOM.update(this._container, []);
-                this.setMod('loading', true);
+                this.setMod('loading');
                 this._restoreInputForChannel();
                 this._getData();
             },
@@ -185,7 +185,7 @@ modules.define(
                             BEMDOM.prepend(_this._container, messagesList.join(''));
                         } else {
                             BEMDOM.update(_this._container, messagesList);
-                            _this._scrollToBottom();
+                            _this._scrollToLastMessage();
                         }
 
                         if(_this._textarea.getMod('disabled')) {
@@ -210,7 +210,7 @@ modules.define(
              *
              * @private
              */
-            _scrollToBottom : function(){
+            _scrollToLastMessage : function(){
                 var historyElement = this.elem('history');
                 var historyElementHeight;
 
@@ -225,6 +225,10 @@ modules.define(
                     e.preventDefault();
 
                     if(!this._textarea.hasMod('emoji')) {
+                        if(this._isInputClear()) {
+                            return;
+                        }
+                        
                         this._sendMessage(e.target.value);
                         e.target.value = '';
                     }
@@ -233,7 +237,6 @@ modules.define(
 
             _sendMessage : function(message){
                 var _this = this;
-
                 if(!this._channelId) {
                     return;
                 }
