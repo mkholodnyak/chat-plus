@@ -40,7 +40,7 @@ modules.define(
                             return BEMHTML.apply({
                                 block : 'list',
                                 elem : 'item',
-                                mods : {type : 'users'},
+                                mods : { type : 'users' },
                                 js : {
                                     channelId : im.id,
                                     name : user.name,
@@ -67,7 +67,7 @@ modules.define(
                                 if(data[user.params.id]) {
                                     user.setMod('presence', 'local');
                                 } else if(user.hasMod('presence', 'local')) {
-                                    chatAPI.get('users.getPresence', {user : user.params.id}).then(function(data){
+                                    chatAPI.get('users.getPresence', { user : user.params.id }).then(function(data){
                                         if(data.ok) {
                                             user.setMod('presence', data.presence);
                                         }

@@ -100,7 +100,6 @@ modules.define('i-chat-api', ['jquery', 'vow', 'events', 'functions', 'functions
                 var _this = this;
                 _this.post('rtm.start')
                     .then(function(result){
-                        _this.emit('rtm.start', result);
 
                         if(!result.ok) {
                             throw new Error(result);
@@ -109,6 +108,9 @@ modules.define('i-chat-api', ['jquery', 'vow', 'events', 'functions', 'functions
                         if(!result.url) {
                             throw  new Error('URL для создания socket-соединения не найден!');
                         }
+                        setTimeout(function(){
+                            _this.emit('rtm.start', result);
+                        });
 
                         _this.isOpen(true);
                         _this._initSocket(result.url);
