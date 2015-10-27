@@ -28,6 +28,9 @@ modules.define(
                         if(['jpg', 'jpeg', 'png', 'bmp', 'gif'].indexOf(extension) > -1) {
                             return BEMHTML.apply({
                                 block : 'image',
+                                attrs: {
+                                  onerror: 'this.src="static/images/ghost.png"'
+                                },
                                 mix : { block : 'message', elem : 'container' },
                                 url : href,
                                 title : title || text || ''

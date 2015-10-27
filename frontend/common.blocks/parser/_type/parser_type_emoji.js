@@ -15,7 +15,7 @@ modules.define(
                 width : 24,
                 height : 24,
                 url : 'https://cdn.jsdelivr.net/emojione/assets/png/' + emojiData[emoji].unicode + '.png',
-                title : emoji || ''
+                title : (':' + emoji + ':') || ''
             });
         };
 
