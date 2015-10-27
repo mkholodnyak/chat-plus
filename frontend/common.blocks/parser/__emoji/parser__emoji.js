@@ -1,5 +1,5 @@
 modules.define(
-    'parser_type_emoji',
+    'parser__emoji',
     ['BEMHTML', 'emoji-icon__data'],
     function(provide, BEMHTML, emojiData){
 
@@ -29,10 +29,6 @@ modules.define(
         };
 
         provide(function(messageText){
-            if(!messageText.length) {
-                return messageText;
-            }
-
             return detectEmoji(messageText);
         });
     });

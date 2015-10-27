@@ -1,7 +1,7 @@
 modules.define(
     'message',
-    ['i-bem__dom', 'BEMHTML', 'i-users', 'moment_language_ru', 'marked', 'parser_type_emoji', 'tick'],
-    function(provide, BEMDOM, BEMHTML, Users, moment, marked, emojiParser, tick){
+    ['i-bem__dom', 'BEMHTML', 'i-users', 'moment_language_ru', 'parser'],
+    function(provide, BEMDOM, BEMHTML, Users, moment, parseMessage){
         provide(BEMDOM.decl(this.name, {
                 onSetMod : {
                     js : {
@@ -11,9 +11,6 @@ modules.define(
                     },
                     recent : {
                         'true' : function(){
-                            tick.on('tick', function(){
-                                console.log('tick');
-                            }).start();
                         }
                     }
                 },
@@ -30,7 +27,7 @@ modules.define(
             {
                 render : function(user, message){
                     var username = user ? (user.real_name || user.name) : 'Бот какой-то';
-                    var text = this._parseSystemMessage(message.text);
+                    var text = parseMessage(message.text);
 
                     var messageTime = this._convertTimeStampToDate(message.ts);
                     var isMessageRecent = this._isMessageRecent(messageTime);
@@ -89,24 +86,6 @@ modules.define(
 
                 _formatDate : function(date, needFulltime){
                     return needFulltime ? date.format('HH:mm, DD MMMM YY') : date.fromNow();
-                },
-
-                _parseSystemMessage : function(message){
-                    var regexp = {
-                        system : /<@(.*)\|(.*)>/g,
-                        pm : /<@(.*)>/g
-                    };
-
-                    var matchSystem = regexp.system.exec(message);
-                    var matchPm = regexp.pm.exec(message);
-
-                    if(matchSystem) {
-                        message = '@' + matchSystem[2] + message.replace(regexp.system, '');
-                    } else if(matchPm) {
-                        message = '@' + Users.getUser(matchPm[1]).name + message.replace(regexp.pm, '');
-                    }
-
-                    return emojiParser(marked(message));
                 }
             }
         ));
