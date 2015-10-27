@@ -39,17 +39,26 @@ modules.define('i-users', ['i-chat-api', 'events__channels'],
             },
 
             /**
-             * Получить данные пользователя
+             * Получает данные пользователя
              *
              * @param {String} id - id пользователя
              * @returns {Object}
              */
             getUser : function(id){
-                if(!Object.keys(this._users).length){
+                if(!Object.keys(this._users).length) {
                     return {};
                 }
 
                 return this._users[id] || BOT_PROFILE;
+            },
+
+            /**
+             * Отдает список всех пользователей чата
+             *
+             * @returns {{}|*}
+             */
+            getAll : function(){
+                return this._users;
             }
         };
 
