@@ -6,10 +6,6 @@ modules.define('page', ['i-bem__dom', 'i-chat-api', 'socket-io', 'i-users', 'not
                     'inited' : function(){
                         var _this = this;
 
-                        if(!this.hasMod('logged')) {
-                            return;
-                        }
-
                         io.socket = io.sails.connect();
 
                         io.socket.on('connect', function(){
@@ -27,7 +23,7 @@ modules.define('page', ['i-bem__dom', 'i-chat-api', 'socket-io', 'i-users', 'not
                         if(!chatAPI.isOpen()) {
                             chatAPI.init(_this.params.token);
                         }
-                        
+
                         Users.fetch()
                             .catch(function(err){
                                 console.error(err);
