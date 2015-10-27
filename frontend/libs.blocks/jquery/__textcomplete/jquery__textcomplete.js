@@ -5,7 +5,7 @@ modules.define(
         window.jQuery = $;
 
         loader(
-            'https://cdnjs.cloudflare.com/ajax/libs/jquery.textcomplete/0.2.2/jquery.textcomplete.js',
+            'https://cdnjs.cloudflare.com/ajax/libs/jquery.textcomplete/0.2.2/jquery.textcomplete.min.js',
             function(){
                 provide(jQuery.fn.textcomplete);
             });
