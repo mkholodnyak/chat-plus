@@ -225,17 +225,10 @@ modules.define(
 
                         if(infiniteScroll) {
                             var historyElement = _this.elem('history');
-                            var historyElementHeight;
-                            historyElementHeight = historyElement[0].scrollHeight;
+                            var oldHistoryHeight = historyElement[0].scrollHeight;
 
                             BEMDOM.prepend(_this._container, messagesList.join(''));
-
-                            var newHistoryHeight = historyElement[0].scrollHeight;
-                            var newScrollTop = newHistoryHeight - historyElementHeight;
-                            if(newHistoryHeight > 0) {
-                                _this.setMod('scrollable');
-                                $(historyElement).scrollTop(newScrollTop);
-                            }
+                            _this._preventScrollAfterPrepend(historyElement, oldHistoryHeight);
                         } else {
                             BEMDOM.update(_this._container, messagesList);
                             _this._scrollToLastMessage();
@@ -258,6 +251,15 @@ modules.define(
                 return Message.render(user, message);
             },
 
+            _preventScrollAfterPrepend : function(elem, oldHeight){
+                var newHistoryHeight = elem[0].scrollHeight;
+                var newScrollTop = newHistoryHeight - oldHeight;
+                if(newHistoryHeight > 0) {
+                    this.setMod('scrollable');
+                    elem.scrollTop(newScrollTop);
+                }
+            },
+
             /**
              * Прокручивает блок с сообщениями к последнему сообщению
              *
@@ -270,11 +272,11 @@ modules.define(
                 if(historyElement.length) {
                     historyElementHeight = historyElement[0].scrollHeight;
                     if(animate) {
-                        $(historyElement).animate({
+                        historyElement.animate({
                             scrollTop : historyElementHeight
                         }, time || 1000);
                     } else {
-                        $(historyElement).scrollTop(historyElementHeight);
+                        historyElement.scrollTop(historyElementHeight);
                     }
                 }
             },
