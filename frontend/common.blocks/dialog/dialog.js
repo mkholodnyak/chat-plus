@@ -31,6 +31,13 @@ modules.define(
                     '' : function(){
                         this.elem('blank').hide();
                     }
+                },
+
+                loading : {
+                    '*' : function(modName, modVal){
+                        modVal ? this.setMod(this.elem('spin'), 'visible')
+                            : this.delMod(this.elem('spin'), 'visible');
+                    }
                 }
             },
 
@@ -116,7 +123,7 @@ modules.define(
                 }
 
                 BEMDOM.update(this._container, []);
-                this.setMod(this.elem('spin'), 'visible');
+                this.setMod('loading', true);
                 this._restoreInputForChannel();
                 this._getData();
             },
@@ -129,7 +136,7 @@ modules.define(
                 var history = this.elem('history');
 
                 if((e.type === 'wheel' || e.type === 'DOMMouseScroll' || e.type === 'mousewheel') && history.scrollTop() === 0) {
-                    this.setMod(this.elem('spin'), 'visible');
+                    this.setMod('loading', true);
                     this._getData(true);
                 }
             }, 100),
@@ -189,7 +196,7 @@ modules.define(
                         Notify.error('Ошибка загрузки списка сообщений!');
                     })
                     .always(function(){
-                        _this.delMod(_this.elem('spin'), 'visible');
+                        _this.delMod('loading');
                     });
             },
 
