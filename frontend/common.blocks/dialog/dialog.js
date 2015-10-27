@@ -101,6 +101,8 @@ modules.define(
                 this._tsOffset = 0;
 
                 this.elem('name').text(data.name);
+                this._joinToChannel(data.name);
+
                 this.findBlockInside('editable-title')
                     .reset()
                     .setVal(this._channelId, data.title, (e.type === 'click-channels'));
@@ -126,6 +128,12 @@ modules.define(
                 this.setMod('loading');
                 this._restoreInputForChannel();
                 this._getData();
+            },
+
+            _joinToChannel : function(channelName){
+                chatAPI.post('channels.join', {
+                    name : channelName
+                });
             },
 
             _onHistoryScroll : debounce(function(e){
@@ -228,7 +236,7 @@ modules.define(
                         if(this._isInputClear()) {
                             return;
                         }
-                        
+
                         this._sendMessage(e.target.value);
                         e.target.value = '';
                     }
@@ -252,7 +260,8 @@ modules.define(
                     .then(function(){
                         _this.elem('blank').hide();
                     })
-                    .catch(function(){
+                    .catch(function(err){
+                        console.error(err);
                         Notify.error('Ошибка при отправке сообщения!');
                     });
             }

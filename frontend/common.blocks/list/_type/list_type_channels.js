@@ -56,7 +56,8 @@ modules.define(
                             selectedChannel.click();
                         }
                     })
-                    .catch(function(){
+                    .catch(function(err){
+                        console.error(err);
                         Notify.error('Ошибка получения списка каналов!');
                     })
                     .always(function(){
