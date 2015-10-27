@@ -159,6 +159,10 @@ modules.define(
                             BEMDOM.update(_this._container, messagesList);
                             _this._scrollToBottom();
                         }
+
+                        if(_this._textarea.getMod('disabled')) {
+                            _this._textarea.delMod('disabled');
+                        }
                     })
                     .catch(function(){
                         Notify.error('Ошибка загрузки списка сообщений!');
