@@ -42,6 +42,7 @@ modules.define(
                         _this.setTitle(chatInfo.team.name || '');
                     })
                     .catch(function(err){
+                        console.error(err);
                         Notify.error('Ошибка получения информации о чате');
                     });
             },

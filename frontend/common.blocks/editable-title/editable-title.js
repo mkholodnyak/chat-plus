@@ -142,7 +142,8 @@ modules.define(
                             _this.emit('channel-change-title', { newTitle : newTitle });
                         }
                     })
-                    .catch(function(){
+                    .catch(function(err){
+                        console.error(err);
                         Notify.error('Ошибка изменения темы канала');
                     })
                     .always(function(){
