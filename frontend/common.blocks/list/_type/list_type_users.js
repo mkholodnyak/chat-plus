@@ -1,7 +1,7 @@
 modules.define(
     'list',
-    ['i-bem__dom', 'BEMHTML', 'jquery', 'i-chat-api', 'i-users', 'notify', 'events__channels', 'keyboard__codes', 'editable-title'],
-    function(provide, BEMDOM, BEMHTML, $, chatAPI, Users, Notify, channels, keyCodes, EditableTitle, List){
+    ['i-bem__dom', 'BEMHTML', 'jquery', 'i-chat-api', 'i-users', 'notify', 'events__channels', 'keyboard__codes', 'editable-title', 'user'],
+    function(provide, BEMDOM, BEMHTML, $, chatAPI, Users, Notify, channels, keyCodes, EditableTitle, User, List){
 
         provide(List.decl({ modName : 'type', modVal : 'users' }, {
             _initializeLists : function(){
@@ -36,6 +36,7 @@ modules.define(
                                 user.presence = usersStatusOnStart[user.id];
                             }
 
+                            var userBlock = User.render(user);
                             return BEMHTML.apply({
                                 block : 'list',
                                 elem : 'item',
@@ -45,18 +46,7 @@ modules.define(
                                     name : user.name,
                                     title : user.real_name
                                 },
-                                content : {
-                                    block : 'user',
-                                    js : {
-                                        id : user.id
-                                    },
-                                    mods : {presence : user.presence},
-                                    user : {
-                                        name : user.name,
-                                        realName : user.real_name,
-                                        image_48 : user.profile.image_48
-                                    }
-                                }
+                                content : userBlock
                             });
                         });
 
