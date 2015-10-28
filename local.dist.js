@@ -39,5 +39,10 @@ module.exports = {
         adapter: 'mongo',
         url: 'YOUR_MONGODB_URL', // Example: mongodb://127.0.0.1:27017/chatik
         collection: 'sessions'
+    },
+
+    yandexDisk: {
+        login: 'YOUR_YANDEX_DISK_LOGIN',
+        password: 'YOUR_YANDEX_DISK_PASSWORD'
     }
 };

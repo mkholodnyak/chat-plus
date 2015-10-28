@@ -66,7 +66,8 @@ module.exports.routes = {
     'post /user/:id/update' : 'UserController.update',
 
     // Files
-    'get /uploads/:id' : 'FileController.download',
+    'get /uploading' : 'FileController.upload',
+    'post /uploading' : 'FileController.upload',
 
     // static
     'get /static/:directory/:file' : 'FileController.getStatic'

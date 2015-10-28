@@ -9,6 +9,7 @@
         { block : 'menu', mods : { theme : 'islands', size : 'm' }, },
         { block : 'menu-item' },
         { block : 'textcomplete' },
+        { block : 'uploader' },
         {
             block : 'popup',
             mods : {

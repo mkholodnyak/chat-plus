@@ -8,6 +8,8 @@
 var fs = require('fs');
 var gm = require('gm').subClass({ imageMagick : true });
 var path = require('path');
+var crypto = require('crypto');
+var yandexDiskAPI = require('./../services/yadisk');
 
 module.exports = {
 
@@ -15,9 +17,53 @@ module.exports = {
      * `FileController.upload()`
      */
     upload : function(req, res){
-        return res.json({
-            todo : 'upload() is not implemented yet!'
+        var _this = this;
+        req.file('content').upload({
+            dirname : 'uploads/'
+        }, function(err, uploadedFiles){
+            if(err) {
+                return res.negotiate(err);
+            }
+
+            if(uploadedFiles.length === 0) {
+                return res.badRequest('Файл не был загружен на сервер!');
+            }
+
+            var file = uploadedFiles[0];
+            var filename = file.fd;
+            var uploadName = _this._generateFilename(file.filename);
+
+            console.log({
+                filename : filename,
+                uploadName : uploadName
+            });
+
+            yandexDiskAPI.upload(filename, uploadName)
+                .then(function(link){
+                    return res.json({
+                        status : true,
+                        link : link
+                    });
+                })
+                .catch(function(err){
+                    console.error(err);
+                    return res.json({
+                        status : false,
+                        error : err.message
+                    });
+                });
         });
+    },
+
+    _generateFilename : function(fileName){
+        //var extension = path.extname(fileName);
+        //var file = path.basename(fileName, extension);
+        return this._generateRandomString(10) + '_' + fileName;
+    },
+
+    _generateRandomString : function(charactersCount){
+        charactersCount = +charactersCount || 10;
+        return crypto.randomBytes(charactersCount).toString('hex');
     },
 
     /**
@@ -46,9 +92,9 @@ module.exports = {
 
         // h_0000_w_0000_
         var sizeNamePart = (
-                               height? (
-                           'h_' + height + '_') : '') + (
-                               width? 'w_' + width + '_' : '');
+                height ? (
+                'h_' + height + '_') : '') + (
+                width ? 'w_' + width + '_' : '');
 
         filePathWithSize = path.resolve(uploadDir, sizeNamePart + req.param('id'));
 

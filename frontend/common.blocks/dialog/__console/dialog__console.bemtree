@@ -37,14 +37,20 @@ block('dialog').elem('console')(
                 {
                     block : 'textarea',
                     mods : {
-                        disabled: true,
+                        disabled : true,
                         focused : false,
-                        theme: 'shriming'
+                        theme : 'shriming'
                     },
-                    mix : {
-                        block : 'chat-input',
-                        elem : 'input'
-                    },
+                    mix : [
+                        {
+                            block : 'chat-input',
+                            elem : 'input'
+                        },
+                        {
+                            block : 'uploader',
+                            js : true
+                        }
+                    ],
                     placeholder : 'Введите сообщение'
                 },
                 {
@@ -52,7 +58,7 @@ block('dialog').elem('console')(
                     mods : { theme : 'islands', view : 'plain' },
                     icon : {
                         block : 'icon',
-                        content: '☺'
+                        content : '☺'
                     },
                     mix : [
                         {

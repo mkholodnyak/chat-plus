@@ -9,9 +9,7 @@ modules.define('page', ['i-bem__dom', 'i-chat-api', 'socket-io', 'i-users', 'not
                         io.socket = io.sails.connect();
 
                         io.socket.on('connect', function(){
-                            io.socket.get('/csrfToken', function(data){
-                                io.socket.get('/webrtc/connected', { _csrf : data._csrf });
-                            });
+                            io.socket.get('/webrtc/connected');
                         });
 
                         io.socket.on('activeUsersUpdated', function(users){
@@ -31,8 +29,17 @@ modules.define('page', ['i-bem__dom', 'i-chat-api', 'socket-io', 'i-users', 'not
                             });
                         _this.emit('slackInited');
 
+                        this._preventDropEvents();
+
                     }
                 }
+            },
+
+            _preventDropEvents : function(){
+                this.bindTo('dragover dragenter dragleave drop', function(e){
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
             }
         }));
     }
