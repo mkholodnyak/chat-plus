@@ -65,40 +65,45 @@ modules.define(
 
             _prepareFormData : function(file){
                 var formData = new FormData();
-                formData.append('file', file);
+                formData.append('content', file);
 
                 return formData;
             },
 
-            _submitURL: '/uploads',
+            _submitURL : '/uploading',
 
             _sendFile : function(formData){
+                var _this = this;
+
                 $.ajax({
-                    url : this._submitURL,
-                    type : 'POST',
+                    url : '/uploading',
                     data : formData,
-                    cache : false,
-                    dataType : 'json',
                     processData : false,
+                    cache : false,
                     contentType : false,
-                    success : function(data, textStatus, jqXHR){
-                        console.log('success');
-                        if(typeof data.error === 'undefined') {
-                            //submitForm(event, data);
+                    type : 'POST'
+                })
+                    .done(function(result){
+                        if(result.link) {
+                            _this._printLinkToFile(result.link);
+                        } else {
+                            console.error('В ответе нет ссылки!');
                         }
-                        else {
-                            console.log('ERRORS: ' + data.error);
-                        }
-                    },
-                    error : function(jqXHR, textStatus, errorThrown){
-                        console.log('ERRORS: ' + textStatus);
-                    }
-                });
+                    })
+                    .fail(function(err){
+                        console.error(err);
+                    });
             },
 
             _cancelUploading : function(reason){
                 Notify.error(reason || 'Ошибка загрузки файла!');
                 this.delMod('uploading');
+            },
+
+            _printLinkToFile : function(link){
+                Notify.success('Файл успешно загружен!');
+                this.delMod('uploading');
+                this._textarea.setVal(link);
             },
 
             // Пусть будет 10мб
