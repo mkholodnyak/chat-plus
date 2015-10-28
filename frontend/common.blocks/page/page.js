@@ -31,8 +31,17 @@ modules.define('page', ['i-bem__dom', 'i-chat-api', 'socket-io', 'i-users', 'not
                             });
                         _this.emit('slackInited');
 
+                        this._preventDropEvents();
+
                     }
                 }
+            },
+
+            _preventDropEvents : function(){
+                this.bindTo('dragover dragenter dragleave drop', function(e){
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
             }
         }));
     }
