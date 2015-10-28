@@ -275,10 +275,7 @@ modules.define(
             //Socket
             _sendMessage : function(type, message, to){
                 message = {type : type, content : message, to : to};
-                io.socket.get('/csrfToken', function(data){
-                    message._csrf = data._csrf;
-                    io.socket.post('/webrtc/message', message);
-                });
+                io.socket.post('/webrtc/message', message);
             }
         }));
     }
