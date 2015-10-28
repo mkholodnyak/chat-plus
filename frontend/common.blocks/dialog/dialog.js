@@ -319,7 +319,6 @@ modules.define(
                         Notify.error('Ошибка при отправке сообщения!');
                     })
                     .always(function(){
-                        console.log(_this._channelId);
                         sessionStorage.removeItem(_this._channelId);
                     });
             }

@@ -41,13 +41,13 @@ modules.define(
                     this.delMod('drag-enter');
                 });
 
-                this.bindTo('drop change submit', this._handleDroppedFile.bind(this));
+                this.bindTo('drop', this._handleDroppedFile.bind(this));
             },
 
             _handleDroppedFile : function(e){
                 this.setMod('uploading', true);
 
-                var file = (e.type === 'submit') ? e.target[0].files[0] : e.originalEvent.dataTransfer.files[0];
+                var file = e.originalEvent.dataTransfer.files[0];
                 if(!file) {
                     this._cancelUploading('Ошибка загрузки файла!');
                     return;
