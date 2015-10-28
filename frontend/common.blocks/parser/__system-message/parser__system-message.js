@@ -8,15 +8,18 @@ modules.define(
             pm : /<@(.*)>/g
         };
 
+        var createMentionBlock = function(text){
+            return '__`' + text + '`__';
+        };
         var parseSystemMessage = function(message){
 
             var matchSystem = regexp.system.exec(message);
             var matchPm = regexp.pm.exec(message);
 
             if(matchSystem) {
-                message = '@' + matchSystem[2] + message.replace(regexp.system, '');
+                message = '@' + createMentionBlock(matchSystem[2]) + message.replace(regexp.system, '');
             } else if(matchPm) {
-                message = '@' + Users.getUser(matchPm[1]).name + message.replace(regexp.pm, '');
+                message = '@' + createMentionBlock(Users.getUser(matchPm[1]).name) + message.replace(regexp.pm, '');
             }
 
             return message;
