@@ -70,7 +70,7 @@ modules.define(
                 return formData;
             },
 
-            _submitURL: '',
+            _submitURL: '/uploads',
 
             _sendFile : function(formData){
                 $.ajax({

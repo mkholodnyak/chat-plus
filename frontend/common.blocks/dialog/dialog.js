@@ -59,7 +59,7 @@ modules.define(
                     }
                 }
             },
-            
+
             destruct : function(){
                 List.un('click-channels click-users');
             },
