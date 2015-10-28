@@ -15,17 +15,17 @@ if(!credentials) {
     password = credentials.password;
 }
 
-var disk = new YandexDisk(login, password);
-
 var yandexDiskAPI = {
     upload : function(pathName, filename){
 
         return new vow.Promise(function(resolve, reject){
+            var disk = new YandexDisk(login, password, function(err){
+                if(err) return reject(err);
+            });
             disk.uploadFile(path.resolve(pathName), filename, function(err){
                 if(err) {
                     return reject(err);
                 }
-
                 disk.publish(filename, function(err, result){
                     if(err) {
                         return reject(err);

@@ -84,14 +84,16 @@ modules.define(
                     type : 'POST'
                 })
                     .done(function(result){
-                        if(result.link) {
-                            _this._printLinkToFile(result.link);
-                        } else {
-                            console.error('В ответе нет ссылки!');
+                        if(!result.status) {
+                            console.error(result.error);
+                            _this._cancelUploading('Ошибка обработки файла!');
+                            return;
                         }
+                        _this._printLinkToFile(result.link);
                     })
                     .fail(function(err){
                         console.error(err);
+                        _this._cancelUploading('Ошибка обработки файла!');
                     });
             },
 

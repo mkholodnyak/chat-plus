@@ -41,11 +41,16 @@ module.exports = {
             yandexDiskAPI.upload(filename, uploadName)
                 .then(function(link){
                     return res.json({
+                        status : true,
                         link : link
                     });
                 })
                 .catch(function(err){
-                    return res.negotiate(err);
+                    console.error(err);
+                    return res.json({
+                        status : false,
+                        error : err.message
+                    });
                 });
         });
     },
