@@ -14,7 +14,8 @@
  1) Установите базу данных [MongoDB](https://www.mongodb.org/).
 
  2) Переименуйте файл `./local.dist.js` в `./local.js`, перенесите его в `./config` и подставьте в него свои параметры.
-    Данные для авторизации можно получить на странице [Slack API](https://api.slack.com/applications) в разделе "OAuth Information".
+
+Данные для авторизации в Slack можно получить на странице [Slack API](https://api.slack.com/applications) в разделе "OAuth Information".
 
 ```javascript
  options: {
@@ -24,6 +25,7 @@
              team: 'YOUR_TEAM',
           }
 ```
+Логин и пароль к `Яндекс Диску` можно получить на [странице регистрации аккаунта](https://disk.yandex.ru).
 
 Путь к локальной БД нужно прописать вместо `YOUR_MONGODB_URL`.
 Пример: ` mongodb://127.0.0.1:27017/chat`
